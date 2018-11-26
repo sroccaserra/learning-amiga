@@ -19,6 +19,11 @@ hd/copperroller: doc/3-copperroller/c2.asm doc/3-copperroller/av.raw
 	cd doc/3-copperroller ; \
 		vasmm68k_mot -kick1hunks -Fhunkexe -o ../../hd/copperroller -nosym c2.asm
 
-run: hd/example hd/copperbars hd/horizontalshift hd/copperroller
+hd/copperrollerbig: doc/4-copperroller-big/c3.asm doc/4-copperroller-big/amigavikke-flowers.raw
+	rm -f hd/copperrollerbig
+	cd doc/4-copperroller-big ; \
+		vasmm68k_mot -kick1hunks -Fhunkexe -o ../../hd/copperrollerbig -nosym c3.asm
+
+run: hd/example hd/copperbars hd/horizontalshift hd/copperroller hd/copperrollerbig
 	fs-uae configuration.fs-uae
 
