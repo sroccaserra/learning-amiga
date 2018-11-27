@@ -1,7 +1,9 @@
-Work in progress, trying to understand these examples:
+Work in progress, trying to understand these examples & guides:
 
 - <https://www.reaktor.com/blog/crash-course-to-amiga-assembly-programming/>
 - <http://vikke.net/index.php?id=copperbars-1>
+- <http://coppershade.org/>
+- <https://www.youtube.com/watch?v=p83QUZ1-P10&list=PLc3ltHgmiidpK-s0eP5hTKJnjdTHz0_bW>
 
 To build the programs, I use [vasm](http://sun.hasenbraten.de/vasm/) to build the binaries in the `hd` dir, see Makefile for info.
 

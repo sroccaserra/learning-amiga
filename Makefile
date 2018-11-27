@@ -1,3 +1,5 @@
+hd/learning: src/learning.asm
+	vasmm68k_mot -kick1hunks -Fhunkexe -o hd/learning -nosym src/learning.asm
 
 hd/example: doc/amiga-assembly-crashcourse/source.asm doc/amiga-assembly-crashcourse/masters3.raw
 	rm -f hd/example
@@ -24,6 +26,6 @@ hd/copperrollerbig: doc/4-copperroller-big/c3.asm doc/4-copperroller-big/amigavi
 	cd doc/4-copperroller-big ; \
 		vasmm68k_mot -kick1hunks -Fhunkexe -o ../../hd/copperrollerbig -nosym c3.asm
 
-run: hd/example hd/copperbars hd/horizontalshift hd/copperroller hd/copperrollerbig
+run: hd/example hd/copperbars hd/horizontalshift hd/copperroller hd/copperrollerbig hd/learning
 	fs-uae configuration.fs-uae
 

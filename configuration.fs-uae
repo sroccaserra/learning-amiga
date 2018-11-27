@@ -1,6 +1,9 @@
 [fs-uae]
-floppy_drive_0 = $HOME/Applications/Games/Roms/Amiga/adf/amiga-os-134-workbench.adf
-floppy_drive_1 = $HOME/Applications/Games/Roms/Amiga/adf/amiga-os-134-extras.adf
-hard_drive_0 = hd
-kickstart_file = $HOME/Applications/Games/Roms/Amiga/rom/amiga-os-130.rom
 console_debugger = 1
+keep_aspect = 1
+
+floppy_drive_0 = $HOME/Applications/Games/Roms/Amiga/adf/amiga-os-134-workbench.adf
+hard_drive_0 = $HOME/Applications/Games/Roms/Amiga/hdf/workbench-135.hdf
+kickstart_file = $HOME/Applications/Games/Roms/Amiga/rom/amiga-os-130.rom
+
+hard_drive_1 = hd
