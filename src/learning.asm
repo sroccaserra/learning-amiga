@@ -7,10 +7,20 @@
 ; - <https://www.youtube.com/watch?v=p83QUZ1-P10&list=PLc3ltHgmiidpK-s0eP5hTKJnjdTHz0_bW>
 
 init:
+        move.l  4.w,a6          ; exec base
+        clr.l   d0
+        move.l  #gfxname,a1
+        jsr     -552(a6)        ; call openLibrary: d0 = openLibrary(a1,d0)
+        move.l  d0,a1           ; move result to a1
+        move.l  38(a1),d4       ; save the original copper pointer to d4
+        jsr     -414(a6)        ; call closelibrary()
+
         move    #$ac,d7         ; start y position of rasterline
         move    #1,d6           ; y increment
         move    $dff01c,d5      ; save interupt bits state in d5
         move    #$7fff,$dff09a  ; disable all bits in INTENA
+
+        move.l  #Copper,$dff080 ; Point the copper pointer to the copper list
 
 *******************************
 mainloop:
@@ -51,6 +61,15 @@ waitras2:                       ; wait for vpos to leave rasterline position
         bne     mainloop
 *******************************
 exit:
+        move.l  d4,$dff080      ; restore original copper pointer
         or      #$c000,d5
         move    d5,$dff09a      ; restore initial INTENA bits
         rts
+
+gfxname:
+        dc.b "graphics.library",0
+
+        SECTION tut,DATA_C      ; Allocate this section in chip memory, required by the copper
+Copper:
+        dc.w    $100,$0200      ; set the number of bitplanes to display to 0
+        dc.w    $ffff,$fffe     ; end of copper list
