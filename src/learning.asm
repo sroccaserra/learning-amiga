@@ -1,23 +1,32 @@
 ; Learning the Amiga system
 
-        move.b #10,d1
-        move.w d1,$dff180
+init:
+        move.w  #$ac,d7         ; start y position of rasterline
+        move.w  #1,d6           ; y increment
 
+*******************************
 mainloop:
-        add #254,d1
+waitframe:
+        cmp.b   #$ff,$dff006
+        bne     waitframe
+
+;------ Frame loop start ------
+
+        add     d6,d7           ; increment y position of rasterline
 
 waitras1:
-        move.w d1,$dff180
-        cmp.b $dff006,d1
-        bne waitras1
-        move.w #$fff,$dff180
+        cmp.b   $dff006,d7
+        bne     waitras1
+        move.w  #$fff,$dff180   ; set color 0 to white (draws a white line)
 
 waitras2:
-        cmp.b $dff006,d1
-        beq waitras2
-        move.w d1,$dff180
+        cmp.b   $dff006,d7
+        beq     waitras2
+        move.w  #$116,$dff180   ; set color 0 to blue
 
-        btst #6,$bfe001
-        bne mainloop
+;------ Frame loop end --------
 
+        btst    #6,$bfe001
+        bne     mainloop
+*******************************
         rts
