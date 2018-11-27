@@ -7,8 +7,10 @@
 ; - <https://www.youtube.com/watch?v=p83QUZ1-P10&list=PLc3ltHgmiidpK-s0eP5hTKJnjdTHz0_bW>
 
 init:
-        move.w  #$ac,d7         ; start y position of rasterline
-        move.w  #1,d6           ; y increment
+        move    #$ac,d7         ; start y position of rasterline
+        move    #1,d6           ; y increment
+        move    $dff01c,d5      ; save interupt bits state in d5
+        move    #$7fff,$dff09a  ; disable all bits in INTENA
 
 *******************************
 mainloop:
@@ -36,16 +38,19 @@ ok2:
 waitras1:                       ; wait for vpos to reach rasterline postion
         cmp.b   $dff006,d7
         bne     waitras1
-        move.w  #$fff,$dff180   ; set background color to white (draws a white line)
+        move    #$fff,$dff180   ; set background color to white (draws a white line)
 
 waitras2:                       ; wait for vpos to leave rasterline position
         cmp.b   $dff006,d7
         beq     waitras2
-        move.w  #$000,$dff180   ; set background color to black
+        move    #$000,$dff180   ; set background color to black
 
 ;------ Frame loop end --------
 
         btst    #6,$bfe001      ; is mouse button pressed?
         bne     mainloop
 *******************************
+exit:
+        or      #$c000,d5
+        move    d5,$dff09a      ; restore initial INTENA bits
         rts
