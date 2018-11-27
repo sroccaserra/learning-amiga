@@ -4,6 +4,7 @@ Work in progress, trying to understand these examples & guides:
 - <http://vikke.net/index.php?id=copperbars-1>
 - <http://coppershade.org/>
 - <https://www.youtube.com/watch?v=p83QUZ1-P10&list=PLc3ltHgmiidpK-s0eP5hTKJnjdTHz0_bW>
+- [Amiga Hardware Reference Manual](http://amigadev.elowar.com/read/ADCD_2.1/Hardware_Manual_guide/node0000.html)
 
 To build the programs, I use [vasm](http://sun.hasenbraten.de/vasm/) to build the binaries in the `hd` dir, see Makefile for info.
 
