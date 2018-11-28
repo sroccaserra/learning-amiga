@@ -26,6 +26,13 @@ hd/copperrollerbig: doc/4-copperroller-big/c3.asm doc/4-copperroller-big/amigavi
 	cd doc/4-copperroller-big ; \
 		vasmm68k_mot -kick1hunks -Fhunkexe -o ../../hd/copperrollerbig -nosym c3.asm
 
-run: hd/example hd/copperbars hd/horizontalshift hd/copperroller hd/copperrollerbig hd/learning
+hd/horizontalscroller: doc/5-horizontalscroller/s1.asm doc/5-horizontalscroller/font.raw
+	cd doc/5-horizontalscroller ; \
+		vasmm68k_mot -kick1hunks -Fhunkexe -o ../../hd/horizontalscroller -nosym s1.asm
+
+.PHONY: build
+build: hd/learning hd/example hd/copperbars hd/horizontalshift hd/copperroller hd/copperrollerbig hd/horizontalscroller
+
+run:
 	fs-uae configuration.fs-uae
 
