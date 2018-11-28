@@ -71,5 +71,5 @@ gfxname:
 
         SECTION tut,DATA_C      ; Allocate this section in chip memory, required by the copper
 Copper:
-        dc.w    $100,$0200      ; set the number of bitplanes to display to 0
-        dc.w    $ffff,$fffe     ; end of copper list
+        dc.w    $0100,$0200     ; Turn off all the bitplanes (with color burst = on, for Amiga 1000)
+        dc.w    $ffff,$fffe     ; End of copper list (wait for impossible position $ffff)
