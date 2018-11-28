@@ -24,11 +24,14 @@ init:
 
 *******************************
 mainloop:
-waitframe:
+waitframe1:
         btst    #0,$dff005      ; wait for most significant bit of vpos (V8) to be zero (frame flop)
-        bne     waitframe
-        cmp.b   #$2c,$dff006    ; wait for least significant bits of vpos (V7-V0) to equal #$2c
-        bne     waitframe
+        bne     waitframe1
+        cmp.b   #$2a,$dff006    ; wait for least significant bits of vpos (V7-V0) to equal #$2c
+        bne     waitframe1
+waitframe2:
+        cmp.b   #$2a,$dff006    ; loop is too fast, wait until we leave that scanline
+        beq     waitframe2
 
 ;------ Frame loop start ------
 
@@ -44,15 +47,10 @@ ok1:
         neg     d6              ; same idea, but instead bounce on the top (line #$40)
 ok2:
 
-waitras1:                       ; wait for vpos to reach rasterline postion
-        cmp.b   $dff006,d7
-        bne     waitras1
-        move    #$fff,$dff180   ; set background color to white (draws a white line)
-
-waitras2:                       ; wait for vpos to leave rasterline position
-        cmp.b   $dff006,d7
-        beq     waitras2
-        move    #$113,$dff180   ; set background color to black
+        move.b  d7,waitras1     ; write rasterline vpos to copper list
+        move    d7,d0
+        add     #1,d0           ; compute next line vpos
+        move.b  d0,waitras2     ; write next line vpos to copper list
 
 ;------ Frame loop end --------
 
@@ -77,6 +75,13 @@ Copper:
         dc.w    $2b07,$fffe     ; wait for screen position
         dc.w    $180, $56c
         dc.w    $2c07,$fffe
+        dc.w    $180, $113
+
+waitras1:
+        dc.w    $8007,$fffe     ; Beginning of white line position
+        dc.w    $180, $fff
+waitras2:
+        dc.w    $8107,$fffe     ; Restore color on next line position
         dc.w    $180, $113
 
         dc.w    $ffdf,$fffe     ; wait past the first half of the screen (we have only 8 bits to express vpos here)
