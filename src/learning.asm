@@ -29,7 +29,6 @@ waitframe:
         bne     waitframe
         cmp.b   #$2c,$dff006    ; wait for least significant bits of vpos (V7-V0) to equal #$2c
         bne     waitframe
-        move    #$000,$dff180   ; set background color to black
 
 ;------ Frame loop start ------
 
@@ -53,7 +52,7 @@ waitras1:                       ; wait for vpos to reach rasterline postion
 waitras2:                       ; wait for vpos to leave rasterline position
         cmp.b   $dff006,d7
         beq     waitras2
-        move    #$000,$dff180   ; set background color to black
+        move    #$113,$dff180   ; set background color to black
 
 ;------ Frame loop end --------
 
@@ -71,5 +70,19 @@ gfxname:
 
         SECTION tut,DATA_C      ; Allocate this section in chip memory, required by the copper
 Copper:
-        dc.w    $0100,$0200     ; Turn off all the bitplanes (with color burst = on, for Amiga 1000)
+        dc.w    $1fc,$0000      ; Slow fetch mode for AGA compatibility
+        dc.w    $100,$0200      ; Turn off all the bitplanes (with color burst = on, for Amiga 1000)
+
+        dc.w    $180,$349       ; set background color
+        dc.w    $2b07,$fffe     ; wait for screen position
+        dc.w    $180, $56c
+        dc.w    $2c07,$fffe
+        dc.w    $180, $113
+
+        dc.w    $ffdf,$fffe     ; wait past the first half of the screen (we have only 8 bits to express vpos here)
+        dc.w    $2c07,$fffe
+        dc.w    $180, $56c
+        dc.w    $2d07,$fffe
+        dc.w    $180, $349
+
         dc.w    $ffff,$fffe     ; End of copper list (wait for impossible position $ffff)
