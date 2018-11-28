@@ -2,7 +2,7 @@
 floppy_drive_volume = 0
 keep_aspect = 1
 
-hard_drive_0 = $HOME/Applications/Games/Roms/Amiga/hdf/workbench-135.hdf
+#hard_drive_0 = $HOME/Applications/Games/Roms/Amiga/hdf/workbench-135.hdf
 kickstart_file = $HOME/Applications/Games/Roms/Amiga/rom/amiga-os-130.rom
 
 console_debugger = 1
