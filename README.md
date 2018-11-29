@@ -6,7 +6,7 @@ Work in progress, trying to understand these examples & guides:
 - <https://www.youtube.com/watch?v=p83QUZ1-P10&list=PLc3ltHgmiidpK-s0eP5hTKJnjdTHz0_bW>
 - [Amiga Hardware Reference Manual](http://amigadev.elowar.com/read/ADCD_2.1/Hardware_Manual_guide/node0000.html)
 
-At the moment, the code in `src/learning.asm` displays a moving white rasterline using a copper list:
+At the moment, the code in `src/learning.asm` displays a moving horizontal copper bar using a copper list:
 
 ![Screenshot](doc/2018-11-29_Screenshot.png)
 
