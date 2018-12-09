@@ -1,4 +1,4 @@
-; vim: syntax=asm68k
+; vim: syntax=asm68k:tabstop=8
 
 DMACONR         EQU             $dff002
 ADKCONR         EQU             $dff010
