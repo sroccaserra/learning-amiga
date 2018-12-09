@@ -12,6 +12,8 @@
 ********************************************************************************
 ABSEXECBASE     equ             4       ; base of exec.library
 
+CIAAPORTA       equ             $bfe001
+
 INTENAR         equ             $dff01c
 COP1LCH         equ             $dff080
 INTENA          equ             $dff09a
@@ -19,33 +21,28 @@ VPOSR           equ             $dff004
 VHPOSR          equ             $dff006
 ********************************************************************************
 
-;        ORG     $20000
-;        LOAD    $20000
-;        JUMPPTR init
-
 init:
-        move.l  ABSEXECBASE,a6  ; preparing call to oldOpenLibrary: move execbase to a6
+        move.l  ABSEXECBASE,a6          ; preparing call to oldOpenLibrary: move execbase to a6
         clr.l   d0
         move.l  #gfxname,a1
-        jsr     -408(a6)        ; call oldOpenLibrary: d0 = oldOpenLibrary(a1,d0) (relative address to exec.library)
-        move.l  d0,a1           ; move result to a1
-        move.l  38(a1),d4       ; save the original copper pointer to d4
-        jsr     -414(a6)        ; call closelibrary()
+        jsr     -408(a6)                ; call oldOpenLibrary: d0 = oldOpenLibrary(a1,d0) (relative address to exec.library)
+        move.l  d0,a1                   ; move result to a1
+        move.l  38(a1),oldcopper        ; save the original copper pointer
+        jsr     -414(a6)                ; call closelibrary()
 
-        move    #$ac,d7         ; start y position of copperbar
-        move    #1,d6           ; y increment
-        move    INTENAR,d0      ; save interupt bits state
-        move    d0,oldintena
-        move    #$7fff,INTENA   ; disable all bits in INTENA
+        move    #$ac,d7                 ; start y position of copperbar
+        move    #1,d6                   ; y increment
+        move    INTENAR,oldintena       ; save interupt bits state
+        move    #$7fff,INTENA           ; disable all bits in INTENA
 
-        move.l  #copper,COP1LCH ; Point the copper pointer to the copper list
+        move.l  #copper,COP1LCH         ; Point the copper pointer to the copper list
 
 ********************************************************************************
 mainloop:
 waitframe1:
         btst    #0,VPOSR+1      ; wait for most significant bit of vpos (V8) to be zero (frame flop)
         bne     waitframe1
-        cmp.b   #$2a,VHPOSR     ; wait for least significant bits of vpos (V7-V0) to equal #$2c
+        cmp.b   #$2a,VHPOSR     ; wait for least significant bits of vpos (V7-V0) to equal #$2a
         bne     waitframe1
 waitframe2:
         cmp.b   #$2a,VHPOSR     ; loop is too fast, wait until we leave that scanline
@@ -55,19 +52,20 @@ waitframe2:
 
         add     d6,d7           ; increment y position of copperbar
 
-        cmp.b   #$f0,d7
-        blo     ok1             ; is the copper bar lower than #$f0?
+        cmp.b   vmax,d7
+        blo     ok1             ; is the copper bar before vmax?
         neg     d6              ; if not, negate increment (bounce on the bottom)
+
 ok1:
-
-        cmp.b   #$40,d7
+        cmp.b   vmin,d7
         bhi     ok2
-        neg     d6              ; same idea, but instead bounce on the top (line #$40)
-ok2:
+        neg     d6              ; same idea, but instead bounce on the top (line vmin)
 
+ok2:
         move.l  #copperbar,a0   ; store copperbar address (in copper list) to a0
         move    d7,d0
         moveq   #6-1,d1
+
 .loop:
         move.b  d0,(a0)         ; write current line vpos to copper list
         add     #1,d0           ; compute next line vpos
@@ -76,18 +74,25 @@ ok2:
 
 ;------ Frame loop end --------
 
-        btst    #6,$bfe001      ; is mouse button pressed?
+        btst    #6,CIAAPORTA    ; is mouse button pressed?
         bne     mainloop
 ********************************************************************************
 
 exit:
-        move.l  d4,COP1LCH              ; restore original copper pointer
+        move.l  oldcopper,COP1LCH       ; restore original copper pointer
         or      #$c000,oldintena
         move    oldintena,INTENA        ; restore initial INTENA bits
         rts
 
-        CNOP    0,4
+        cnop    0,4
+vmin:           dc.b    $40     ; vpos min for the copperbar
+vmax:           dc.b    $f0     ; vpos max for the copperbar
+
+        cnop    0,4
 oldintena:      dc.w    0
+
+        cnop    0,4
+oldcopper:      dc.l    0
 
 gfxname:
         dc.b 'graphics.library',0
